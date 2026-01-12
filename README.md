@@ -1,152 +1,64 @@
-Piedra – Papel – Tijera – Lagarto – Spock
-Axente Reactivo con Aprendizaxe por Frecuencias
+## 1. Especificación do contorna de tarefas
 
-Autor: Adrián Rodríguez Sebastián
-Curso: MIA
-Profesor: @dfleta
+| Contorno | Observable | Agentes | Determinista | Episódico | Estático | Discreto | Coñecido |
+|----------|------------|---------|--------------|-----------|---------|----------|----------|
+| RPS      | Parcialmente observable | 2 | Parcialmente determinista | Episódico | Estático | Discreto | Conocido |
+| RPSLS   | Parcialmente observable | 2 | Parcialmente determinista | Secuencial | Estático | Discreto | Conocido |
 
-Índice
+**Justificación:**
 
-Especificación do contorno de tarefas
+- **Observable:** Cada jugador solo ve la jugada del otro después de realizar la suya.  
+- **Agentes:** Dos agentes: jugador y máquina.  
+- **Determinista:** Las reglas son fijas, pero la IA introduce variabilidad.  
+- **Episódico/Secuencial:** Cada jugada es un episodio; si la IA aprende, es secuencial.  
+- **Estático:** El entorno no cambia por sí solo durante el juego.  
+- **Discreto:** Conjunto finito de acciones posibles (3 o 5 según versión).  
+- **Conocido:** Reglas conocidas para ambos jugadores.
 
-Tipo de axente e estrutura
 
-Implementación en Python
 
-Extensión a RPS-Lagarto-Spock
+## 2. Identificación do tipo de axente
 
-Execución do programa
+El agente que implementamos es **reactivo basado en modelo**.  
+Recuerda el historial de jugadas del jugador para predecir la próxima acción y maximizar sus posibilidades de ganar.
 
-.gitignore utilizado
+### Diagrama del agente
 
-Traballo futuro
+![Mi imagen](doc/diagramaagente.png)
 
-1. Especificación do contorno de tarefas
 
-A seguinte táboa describe o contorno segundo os criterios establecidos:
+### Explicación de los componentes
 
-Propiedade	Valor	Xustificación
-Observable	Parcialmente observable	O axente percibe a xogada do xogador, pero non coñece as súas intencións nin a súa estratexia.
-Axentes	Dous axentes	IA contra xogador humano.
-Determinismo	Non determinista	Non é posible predicir con certeza a xogada do xogador.
-Episodicidade	Episódico	Cada ronda é independente doutra.
-Estabilidade	Estático	O ambiente non cambia mentres o axente decide.
-Granularidade	Discreto	Só existen cinco accións posibles.
-Coñecemento	Coñecido	As regras e relacións entre accións son fixas e coñecidas.
-2. Tipo de axente e estrutura
+- **Percepción:** recibe la jugada del jugador en la ronda actual.  
+- **Estado interno:** almacena el historial de jugadas para predecir patrones.  
+- **Función de actualización:** decide la mejor jugada según el historial y la estrategia elegida.  
+- **Actuador / Acción:** devuelve la jugada seleccionada por la IA.
 
-O axente implementado corresponde ao tipo Axente Reactivo Baseado en Modelo.
 
-Este tipo de axente cumpre estas características:
+## 4. Extensión a RPS + Lagarto + Spock
 
-Emprega percepcións (xogada do xogador).
+Hemos ampliado el juego clásico Piedra-Papel-Tijera (RPS) a la versión con cinco símbolos:
 
-Mantén un estado interno (historial de xogadas do xogador).
+**Acciones adicionales:**  
+- Lagarto  
+- Spock
 
-Actualiza ese estado en cada paso.
+**Reglas de victoria:**
 
-A decisión non é puramente reactiva, senón que depende do historial acumulado.
+- Piedra aplasta a Tijera y aplasta a Lagarto  
+- Papel cubre Piedra y refuta Spock  
+- Tijera corta Papel y decapita Lagarto  
+- Lagarto envenena Spock y devora Papel  
+- Spock rompe Tijera y vaporiza Piedra
 
-A acción xorde dunha función que analiza patróns e tendencias para predicir a mellor resposta.
+### Adaptación de la IA
 
-Diagrama do Axente
+La IA utiliza la **estrategia de aprendizaje por frecuencias**:
 
-Engadir a seguinte imaxe no directorio images/agent_diagram.png e referenciala así:
+1. Mantiene un **historial de las jugadas del jugador**.  
+2. Calcula cuál es la **acción más frecuente del jugador**.  
+3. Elige **aleatoriamente entre las acciones que ganan** contra la más frecuente.  
+4. Esto permite que la IA se **adapte y mejore su rendimiento** conforme avanza la partida.  
 
-![Diagrama do axente](images/agent_diagram.png)
+Esta estrategia es modular y permite **agregar fácilmente nuevas acciones o reglas** en el futuro, cumpliendo el principio OCP de SOLID.
 
-3. Implementación en Python
-Estrutura básica do proxecto
-├── src/
-│   ├── main.py
-│   ├── ai_agent.py
-│   ├── rules.py
-├── images/
-│   └── agent_diagram.png
-├── README.md
-└── .gitignore
-
-Lóxica da IA
-
-A IA utiliza un modelo sinxelo pero efectivo:
-
-Gárdase un historial das xogadas do xogador.
-
-Calcúlase cal é a xogada máis frecuente no historial.
-
-Determínanse as accións que gañan contra esa xogada frecuente.
-
-Escóllese unha delas de maneira pseudorandomizada.
-
-Código da IA (ai_agent.py)
-import random
-from collections import Counter
-
-class AIAgent:
-    def __init__(self, options):
-        self.options = options
-        self.history = []
-
-    def get_computer_action(self):
-        if not self.history:
-            return random.choice(self.options)
-
-        freq = Counter(self.history)
-        most_common = freq.most_common(1)[0][0]
-
-        rules = {
-            "piedra": ["tijera", "lagarto"],
-            "papel": ["piedra", "spock"],
-            "tijera": ["papel", "lagarto"],
-            "lagarto": ["spock", "papel"],
-            "spock": ["tijera", "piedra"]
-        }
-
-        winning_actions = [action for action, beats in rules.items() if most_common in beats]
-        return random.choice(winning_actions)
-
-    def update_history(self, player_action):
-        self.history.append(player_action)
-
-4. Extensión a RPS-Lagarto-Spock
-
-O xogo foi ampliado engadindo dúas novas accións:
-
-Lagarto
-
-Spock
-
-As regras ampliadas quedan definidas así:
-
-Piedra aplasta Tijera e Lagarto
-
-Papel cubre Piedra e refuta Spock
-
-Tijera corta Papel e decapita Lagarto
-
-Lagarto envenena Spock e devora Papel
-
-Spock rompe Tijera e vaporiza Piedra
-
-A IA pode utilizar correctamente estas accións porque o modelo de aprendizaxe por frecuencias é independente do número de opcións.
-
-5. Execución do programa
-
-Execución desde o directorio principal:
-
-python3 src/main.py
-
-6. .gitignore utilizado
-__pycache__/
-*.pyc
-venv/
-.env/
-.vscode/
-
-7. Traballo futuro
-
-Emprego dun modelo de Markov baseado en transicións entre xogadas.
-
-Introdución dunha pequena rede neuronal para predición.
-
-Creación dunha interface gráfica para facilitar interacción.
