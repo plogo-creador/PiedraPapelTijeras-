@@ -1,3 +1,9 @@
+### Piedra – Papel – Tijera – Lagarto – Spock
+## Axente Reactivo con Aprendizaxe por Frecuencias
+## Autor: Adrián Rodríguez Sebastián
+## Curso: MIA
+## Profesor: @dfleta
+
 ## 1. Especificación do contorna de tarefas
 
 | Contorno | Observable | Agentes | Determinista | Episódico | Estático | Discreto | Coñecido |
