@@ -24,7 +24,7 @@ Recuerda el historial de jugadas del jugador para predecir la próxima acción y
 
 ### Diagrama del agente
 
-
+![Mi imagen](doc/diagramaagente.png)
 
 
 ### Explicación de los componentes
