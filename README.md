@@ -1,64 +1,150 @@
-## 1. Especificación do contorna de tarefas
+🧠 Piedra – Papel – Tijera – Lagarto – Spock
+Axente Reactivo con Aprendizaxe por Frecuencias
+Autor: Adrián Rodríguez Sebastián
+Curso: MIA
+Profesor: @dfleta
+ 1. Especificación do contorno de tarefas
 
-| Contorno | Observable | Agentes | Determinista | Episódico | Estático | Discreto | Coñecido |
-|----------|------------|---------|--------------|-----------|---------|----------|----------|
-| RPS      | Parcialmente observable | 2 | Parcialmente determinista | Episódico | Estático | Discreto | Conocido |
-| RPSLS   | Parcialmente observable | 2 | Parcialmente determinista | Secuencial | Estático | Discreto | Conocido |
+A continuación analízase o contorno segundo os criterios dados en clase:
 
-**Justificación:**
+Propiedade	Valor	Xustificación
+Observable	Parcialmente observable	O axente só percibe a xogada do xogador, pero non coñece intencións nin estratexia.
+Axentes	Dous axentes (IA e xogador)	Ambos toman decisións independentes, interactuando entre si.
+Determinista / Non determinista	Non determinista	Non se pode predicir con certeza a xogada do xogador.
+Episódico / Secuencial	Episódico	Cada ronda é independente; non existe un obxectivo a longo prazo máis alá de gañar cada ronda.
+Estático / Dinámico	Estático	O estado do ambiente non cambia mentres o axente está a decidir.
+Discreto / Continuo	Discreto	Só existen 5 accións posibles ben definidas.
+Coñecido / Descoñecido	Coñecido	As regras do xogo son fixas e coñecidas previamente polo axente.
+ 2. Tipo de axente e estrutura
 
-- **Observable:** Cada jugador solo ve la jugada del otro después de realizar la suya.  
-- **Agentes:** Dos agentes: jugador y máquina.  
-- **Determinista:** Las reglas son fijas, pero la IA introduce variabilidad.  
-- **Episódico/Secuencial:** Cada jugada es un episodio; si la IA aprende, es secuencial.  
-- **Estático:** El entorno no cambia por sí solo durante el juego.  
-- **Discreto:** Conjunto finito de acciones posibles (3 o 5 según versión).  
-- **Conocido:** Reglas conocidas para ambos jugadores.
+O axente implementado é un Axente Reactivo Baseado en Modelo, xa que:
 
+Percibe a xogada do xogador (“percept”).
 
+Actualiza un estado interno baseado no historial.
 
-## 2. Identificación do tipo de axente
+Utiliza o estado interno para tomar decisións.
 
-El agente que implementamos es **reactivo basado en modelo**.  
-Recuerda el historial de jugadas del jugador para predecir la próxima acción y maximizar sus posibilidades de ganar.
+A decisión depende do modelo de aprendizaxe por frecuencias.
 
-### Diagrama del agente
+ Diagrama do Axente
+<p align="center"> <img src="docs/diagramaagente.png" alt="Diagrama del agente" width="600"/> </p>
+ Explicación da estrutura
 
-![Mi imagen](doc/diagramaagente.png)
+Sensores: reciben a xogada do xogador.
 
+Estado Interno: historial de accións do xogador.
 
-### Explicación de los componentes
+Función de actualización: identifica a xogada máis frecuente.
 
-- **Percepción:** recibe la jugada del jugador en la ronda actual.  
-- **Estado interno:** almacena el historial de jugadas para predecir patrones.  
-- **Función de actualización:** decide la mejor jugada según el historial y la estrategia elegida.  
-- **Actuador / Acción:** devuelve la jugada seleccionada por la IA.
+Función de decisión: escolla a acción que derrota á máis frecuente.
 
+Actuadores: envían a acción da IA como resposta.
 
-## 4. Extensión a RPS + Lagarto + Spock
+ 3. Implementación en Python
+ Estrutura do proxecto
+├── src/
+│   ├── main.py
+│   ├── ai_agent.py
+│   ├── rules.py
+├── images/
+│   └── agent_diagram.png
+├── README.md
+└── .gitignore
 
-Hemos ampliado el juego clásico Piedra-Papel-Tijera (RPS) a la versión con cinco símbolos:
+ Principios SOLID aplicados
 
-**Acciones adicionales:**  
-- Lagarto  
-- Spock
+SRP: cada ficheiro cumpre unha única responsabilidade.
 
-**Reglas de victoria:**
+OCP: o sistema é extensible (engadir novas accións e regras sen modificar o núcleo).
 
-- Piedra aplasta a Tijera y aplasta a Lagarto  
-- Papel cubre Piedra y refuta Spock  
-- Tijera corta Papel y decapita Lagarto  
-- Lagarto envenena Spock y devora Papel  
-- Spock rompe Tijera y vaporiza Piedra
+Módulos independentes: regras, axente e interface separados.
 
-### Adaptación de la IA
+ IA que aprende por frecuencias
+Código principal da IA
+# ai_agent.py
+import random
+from collections import Counter
 
-La IA utiliza la **estrategia de aprendizaje por frecuencias**:
+class AIAgent:
+    def __init__(self, options):
+        self.options = options
+        self.history = []
 
-1. Mantiene un **historial de las jugadas del jugador**.  
-2. Calcula cuál es la **acción más frecuente del jugador**.  
-3. Elige **aleatoriamente entre las acciones que ganan** contra la más frecuente.  
-4. Esto permite que la IA se **adapte y mejore su rendimiento** conforme avanza la partida.  
+    def get_computer_action(self):
+        if not self.history:
+            return random.choice(self.options)
 
-Esta estrategia es modular y permite **agregar fácilmente nuevas acciones o reglas** en el futuro, cumpliendo el principio OCP de SOLID.
+        freq = Counter(self.history)
+        most_common = freq.most_common(1)[0][0]
 
+        rules = {
+            "piedra": ["tijera", "lagarto"],
+            "papel": ["piedra", "spock"],
+            "tijera": ["papel", "lagarto"],
+            "lagarto": ["spock", "papel"],
+            "spock": ["tijera", "piedra"]
+        }
+
+        winning_actions = [action for action, beats in rules.items() if most_common in beats]
+        return random.choice(winning_actions)
+
+    def update_history(self, player_action):
+        self.history.append(player_action)
+
+4. Extensión a RPS + Lagarto + Spock
+
+Engadíronse dúas novas accións ao sistema:
+
+Lagarto
+
+Spock
+
+ Novas regras de victoria
+
+Piedra aplasta Tijera e aplasta Lagarto
+
+Papel cubre Piedra e refuta Spock
+
+Tijera corta Papel e decapita Lagarto
+
+Lagarto envenena Spock e devora Papel
+
+Spock rompe Tijera e vaporiza Piedra
+
+ Adaptación da IA
+
+A IA non require modificacións estruturais:
+a mesma estratexia de frecuencias funciona cos 5 símbolos.
+
+A clave é que o axente:
+
+Observa a xogada do xogador.
+
+Aprende cal é a máis frecuente.
+
+Escolla entre as accións que lle gañan.
+
+Actualiza o historial.
+
+ 5. Como executar o programa
+python3 src/main.py
+
+ 6. .gitignore recomendado
+__pycache__/
+*.pyc
+venv/
+.env/
+.vscode/
+
+ 7. Traballo futuro (opcional)
+
+Engadir aprendizaxe por cadeas de Markov.
+
+Usar redes neuronais simples para predición.
+
+Crear interface gráfica.
+
+ 8. Licenza
+
+Licenza libre para uso académico.
