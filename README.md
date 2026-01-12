@@ -1,8 +1,8 @@
-### Piedra – Papel – Tijera – Lagarto – Spock
-## Axente Reactivo con Aprendizaxe por Frecuencias
-## Autor: Adrián Rodríguez Sebastián
-## Curso: MIA
-## Profesor: @dfleta
+## Piedra – Papel – Tijera – Lagarto – Spock
+### Axente Reactivo con Aprendizaxe por Frecuencias
+### Autor: Adrián Rodríguez Sebastián
+### Curso: MIA
+### Profesor: @dfleta
 
 ## 1. Especificación do contorna de tarefas
 
