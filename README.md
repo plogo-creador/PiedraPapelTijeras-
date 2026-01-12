@@ -1,48 +1,62 @@
-🧠 Piedra – Papel – Tijera – Lagarto – Spock
+Piedra – Papel – Tijera – Lagarto – Spock
 Axente Reactivo con Aprendizaxe por Frecuencias
+
 Autor: Adrián Rodríguez Sebastián
 Curso: MIA
 Profesor: @dfleta
- 1. Especificación do contorno de tarefas
 
-A continuación analízase o contorno segundo os criterios dados en clase:
+Índice
+
+Especificación do contorno de tarefas
+
+Tipo de axente e estrutura
+
+Implementación en Python
+
+Extensión a RPS-Lagarto-Spock
+
+Execución do programa
+
+.gitignore utilizado
+
+Traballo futuro
+
+1. Especificación do contorno de tarefas
+
+A seguinte táboa describe o contorno segundo os criterios establecidos:
 
 Propiedade	Valor	Xustificación
-Observable	Parcialmente observable	O axente só percibe a xogada do xogador, pero non coñece intencións nin estratexia.
-Axentes	Dous axentes (IA e xogador)	Ambos toman decisións independentes, interactuando entre si.
-Determinista / Non determinista	Non determinista	Non se pode predicir con certeza a xogada do xogador.
-Episódico / Secuencial	Episódico	Cada ronda é independente; non existe un obxectivo a longo prazo máis alá de gañar cada ronda.
-Estático / Dinámico	Estático	O estado do ambiente non cambia mentres o axente está a decidir.
-Discreto / Continuo	Discreto	Só existen 5 accións posibles ben definidas.
-Coñecido / Descoñecido	Coñecido	As regras do xogo son fixas e coñecidas previamente polo axente.
- 2. Tipo de axente e estrutura
+Observable	Parcialmente observable	O axente percibe a xogada do xogador, pero non coñece as súas intencións nin a súa estratexia.
+Axentes	Dous axentes	IA contra xogador humano.
+Determinismo	Non determinista	Non é posible predicir con certeza a xogada do xogador.
+Episodicidade	Episódico	Cada ronda é independente doutra.
+Estabilidade	Estático	O ambiente non cambia mentres o axente decide.
+Granularidade	Discreto	Só existen cinco accións posibles.
+Coñecemento	Coñecido	As regras e relacións entre accións son fixas e coñecidas.
+2. Tipo de axente e estrutura
 
-O axente implementado é un Axente Reactivo Baseado en Modelo, xa que:
+O axente implementado corresponde ao tipo Axente Reactivo Baseado en Modelo.
 
-Percibe a xogada do xogador (“percept”).
+Este tipo de axente cumpre estas características:
 
-Actualiza un estado interno baseado no historial.
+Emprega percepcións (xogada do xogador).
 
-Utiliza o estado interno para tomar decisións.
+Mantén un estado interno (historial de xogadas do xogador).
 
-A decisión depende do modelo de aprendizaxe por frecuencias.
+Actualiza ese estado en cada paso.
 
- Diagrama do Axente
-<p align="center"> <img src="docs/diagramaagente.png" alt="Diagrama del agente" width="600"/> </p>
- Explicación da estrutura
+A decisión non é puramente reactiva, senón que depende do historial acumulado.
 
-Sensores: reciben a xogada do xogador.
+A acción xorde dunha función que analiza patróns e tendencias para predicir a mellor resposta.
 
-Estado Interno: historial de accións do xogador.
+Diagrama do Axente
 
-Función de actualización: identifica a xogada máis frecuente.
+Engadir a seguinte imaxe no directorio images/agent_diagram.png e referenciala así:
 
-Función de decisión: escolla a acción que derrota á máis frecuente.
+![Diagrama do axente](images/agent_diagram.png)
 
-Actuadores: envían a acción da IA como resposta.
-
- 3. Implementación en Python
- Estrutura do proxecto
+3. Implementación en Python
+Estrutura básica do proxecto
 ├── src/
 │   ├── main.py
 │   ├── ai_agent.py
@@ -52,17 +66,19 @@ Actuadores: envían a acción da IA como resposta.
 ├── README.md
 └── .gitignore
 
- Principios SOLID aplicados
+Lóxica da IA
 
-SRP: cada ficheiro cumpre unha única responsabilidade.
+A IA utiliza un modelo sinxelo pero efectivo:
 
-OCP: o sistema é extensible (engadir novas accións e regras sen modificar o núcleo).
+Gárdase un historial das xogadas do xogador.
 
-Módulos independentes: regras, axente e interface separados.
+Calcúlase cal é a xogada máis frecuente no historial.
 
- IA que aprende por frecuencias
-Código principal da IA
-# ai_agent.py
+Determínanse as accións que gañan contra esa xogada frecuente.
+
+Escóllese unha delas de maneira pseudorandomizada.
+
+Código da IA (ai_agent.py)
 import random
 from collections import Counter
 
@@ -92,17 +108,17 @@ class AIAgent:
     def update_history(self, player_action):
         self.history.append(player_action)
 
-4. Extensión a RPS + Lagarto + Spock
+4. Extensión a RPS-Lagarto-Spock
 
-Engadíronse dúas novas accións ao sistema:
+O xogo foi ampliado engadindo dúas novas accións:
 
 Lagarto
 
 Spock
 
- Novas regras de victoria
+As regras ampliadas quedan definidas así:
 
-Piedra aplasta Tijera e aplasta Lagarto
+Piedra aplasta Tijera e Lagarto
 
 Papel cubre Piedra e refuta Spock
 
@@ -112,39 +128,25 @@ Lagarto envenena Spock e devora Papel
 
 Spock rompe Tijera e vaporiza Piedra
 
- Adaptación da IA
+A IA pode utilizar correctamente estas accións porque o modelo de aprendizaxe por frecuencias é independente do número de opcións.
 
-A IA non require modificacións estruturais:
-a mesma estratexia de frecuencias funciona cos 5 símbolos.
+5. Execución do programa
 
-A clave é que o axente:
+Execución desde o directorio principal:
 
-Observa a xogada do xogador.
-
-Aprende cal é a máis frecuente.
-
-Escolla entre as accións que lle gañan.
-
-Actualiza o historial.
-
- 5. Como executar o programa
 python3 src/main.py
 
- 6. .gitignore recomendado
+6. .gitignore utilizado
 __pycache__/
 *.pyc
 venv/
 .env/
 .vscode/
 
- 7. Traballo futuro (opcional)
+7. Traballo futuro
 
-Engadir aprendizaxe por cadeas de Markov.
+Emprego dun modelo de Markov baseado en transicións entre xogadas.
 
-Usar redes neuronais simples para predición.
+Introdución dunha pequena rede neuronal para predición.
 
-Crear interface gráfica.
-
- 8. Licenza
-
-Licenza libre para uso académico.
+Creación dunha interface gráfica para facilitar interacción.
